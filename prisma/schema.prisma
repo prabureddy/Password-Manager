@@ -7,6 +7,14 @@ datasource db {
 }
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["dataproxy"]
+  provider = "prisma-client-js"
+}
+
+model Manager {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt
+  site      String   @db.VarChar(200)
+  username  String   @db.VarChar(40)
+  password  String   @db.VarChar(40)
 }
