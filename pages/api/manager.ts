@@ -1,8 +1,14 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Manager, PrismaClient } from "@prisma/client";
+import Cors from "cors";
 
 const prisma = new PrismaClient();
+
+const cors = Cors({
+  methods: ["GET", "POST", "PUT", "OPTIONS"],
+  ...(process.env.BASE_URL && { origin: process.env.BASE_URL }),
+});
 
 type IError = {
   error: string;
@@ -65,11 +71,35 @@ const putManager = async (
     });
     res.status(202).json(savedPassword);
   } catch (error: any) {
-    return res.status(400).json({ error: error.message || "Something went wrong!" });
+    return res
+      .status(400)
+      .json({ error: error.message || "Something went wrong!" });
   }
 };
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+const runMiddleware = (
+  req: NextApiRequest,
+  res: NextApiResponse,
+  cors: any
+) => {
+  return new Promise((resolve, reject) => {
+    cors(req, res, (result: any) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
+      return resolve(result);
+    });
+  });
+};
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  const middle = await runMiddleware(req, res, cors);
+  console.log("middle");
+  console.log(middle);
+
   switch (req.method) {
     case "GET":
       getManager(req, res);
