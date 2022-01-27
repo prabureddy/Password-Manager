@@ -96,9 +96,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const middle = await runMiddleware(req, res, cors);
-  console.log("middle");
-  console.log(middle);
+  await runMiddleware(req, res, cors);
 
   switch (req.method) {
     case "GET":

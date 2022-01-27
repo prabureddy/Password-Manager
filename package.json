@@ -1,6 +1,10 @@
 {
   "name": "password-manager",
   "private": true,
+  "author": {
+    "name": "Bhargava Prau Reddy",
+    "email": "prabu0reddy777@gmail.com"
+  },
   "scripts": {
     "dev-api": "next dev",
     "start": "next start",
