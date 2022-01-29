@@ -1,13 +1,28 @@
 const validateField = (inputField) => {
   let searchFound = false;
-  for (let i = 0; i < inputField.attributes.length; i++) {
-    const attrib = String(inputField.attributes[i]?.value);
+  for (let attribute of inputField.attributes) {
+    const attrib = String(attribute?.value);
     if (attrib && attrib?.toLowerCase().includes("search")) {
       searchFound = true;
       break;
     }
   }
   return !searchFound;
+};
+
+const generateParent = () => {
+  const topDiv = document.createElement("div");
+  topDiv.id = "pass_manager_parent";
+  topDiv.style["position"] = "absolute";
+  topDiv.style["z-index"] = "10000000000000";
+  topDiv.style["opacity"] = "1";
+  topDiv.style["visibility"] = "visible";
+  topDiv.style["transform"] = "none";
+  topDiv.style["clip-path"] = "none";
+  topDiv.style["filter"] = "none";
+  topDiv.style["mask"] = "none";
+  topDiv.style["display"] = "none";
+  return topDiv;
 };
 
 const generateIFrame = () => {
@@ -29,40 +44,31 @@ const generateIFrame = () => {
   return iframe;
 };
 
+const focusElement = (inputField) => {
+  const topParent = document.getElementById("pass_manager_parent");
+  const elementRect = inputField.getBoundingClientRect();
+  topParent.style["top"] = elementRect?.top + elementRect?.height + "px";
+  topParent.style["left"] = elementRect?.left + "px";
+  topParent.style["display"] = "block";
+};
+
+const blurElement = (inputFields, inputField, event) => {
+  if (event.target !== inputField && !inputFields.includes(event.target)) {
+    const topParent = document.getElementById("pass_manager_parent");
+    topParent.style["display"] = "none";
+  }
+};
+
 const addListenerToInputFields = (inputFields) => {
   console.log(inputFields);
-  const topDiv = document.createElement("div");
-  topDiv.id = "pass_manager_parent";
-  topDiv.style["position"] = "absolute";
-  topDiv.style["z-index"] = "10000000000000";
-  topDiv.style["width"] = "330px";
-  topDiv.style["height"] = "318.25px";
-  topDiv.style["opacity"] = "1";
-  topDiv.style["visibility"] = "visible";
-  topDiv.style["transform"] = "none";
-  topDiv.style["clip-path"] = "none";
-  topDiv.style["filter"] = "none";
-  topDiv.style["mask"] = "none";
-  topDiv.style["display"] = "none";
+  const topDiv = generateParent();
   const iFrame = generateIFrame();
   topDiv.appendChild(iFrame);
   document.body.appendChild(topDiv);
   inputFields.forEach((inputField) => {
     inputField.setAttribute("autocomplete", "off");
-    inputField.addEventListener("focus", async () => {
-      console.log("focused ", inputField);
-      const topParent = document.getElementById("pass_manager_parent");
-      const elementRect = inputField.getBoundingClientRect();
-      topParent.style["top"] = elementRect?.top + elementRect?.height + "px";
-      topParent.style["left"] = elementRect?.left + "px";
-      topParent.style["display"] = "block";
-    });
-    window.onclick = function (event) {
-      if (event.target !== inputField) {
-        const topParent = document.getElementById("pass_manager_parent");
-        topParent.style["display"] = "none";
-      }
-    };
+    inputField.addEventListener("focus", () => focusElement(inputField));
+    window.onclick = (event) => blurElement(inputFields, inputField, event);
   });
 };
 
