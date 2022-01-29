@@ -2,10 +2,33 @@
 <html lang="en_US">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Document</title>
+    <style>
+      body {
+        display: block !important;
+        margin: 0;
+      }
+      #content {
+        border: none;
+        position: relative;
+        inset: 0px;
+        height: 100%;
+        width: 100%;
+        visibility: visible;
+        display: block;
+        z-index: 2147483647;
+        opacity: 1;
+        transform: none;
+        clip-path: none;
+        filter: none;
+        mask: none;
+      }
+      #content::-webkit-scrollbar {
+        display: none;
+      }
+    </style>
   </head>
   <body>
-    <div id="content"></div>
+    <iframe id="content"></iframe>
     <script src="dialog.js"></script>
   </body>
 </html>

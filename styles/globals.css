@@ -1,3 +1,58 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  display: block !important;
+  width: 400px !important;
+  height: 320px !important;
+  overflow: hidden !important;
+}
+
+.managers-container {
+  @apply flex flex-col gap-2 backdrop-blur-sm bg-indigo-100 p-2;
+}
+
+.manager-item {
+  @apply flex flex-row space-x-0 gap-2 p-2 bg-gradient-to-r from-cyan-300 to-blue-300 rounded-md items-center cursor-pointer transition-all delay-75;
+}
+
+.manager-item:hover {
+  @apply from-cyan-400 to-blue-500 drop-shadow-xl skew-x-1 -skew-y-1;
+}
+
+.manager-item .favicon {
+  @apply min-w-fit rounded-md overflow-hidden h-10;
+}
+
+.manager-item .favicon img {
+  @apply object-cover w-full h-full;
+}
+
+.manager-item .content {
+  @apply flex flex-auto flex-col max-w-[15rem] pl-3 py-1 truncate;
+}
+
+.manager-item .content-title {
+  @apply text-sm font-medium text-slate-900 truncate;
+}
+
+.manager-item .content-user {
+  @apply text-sm text-slate-500 truncate;
+}
+
+.manager-item:hover .content-user {
+  @apply text-white underline font-bold;
+}
+
+.manager-item .fill {
+  @apply max-w-xs hidden transform transition-all delay-300;
+}
+
+.manager-item .fill p {
+  @apply text-white text-base font-medium;
+}
+
+.manager-item:hover .fill {
+  @apply flex text-white ml-auto w-10;
+}

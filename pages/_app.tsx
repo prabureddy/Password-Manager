@@ -8,7 +8,6 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
   return (
     <>
-      <style>{`body { display: block !important`}</style>
       <Component {...pageProps} />
     </>
   );

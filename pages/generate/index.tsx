@@ -1,29 +1,33 @@
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import React from "react";
 import { Manager, PrismaClient } from "@prisma/client";
+import { GeneratePageProps } from "../../types";
+import ManagerItem from "../../components/Manager";
 
 const prisma = new PrismaClient();
 
-type GeneratePageProps = {
-  managers: Partial<Manager>[];
-};
-
-const Generate = ({ managers = [] }: GeneratePageProps) => {
+const Generate = ({ managers = [], favIconURL = "" }: GeneratePageProps) => {
+  console.log(managers);
+  const handlerOnClickManager = (id: string) => {
+    console.log(id);
+  };
   return (
-    <div className="flex h-full">
-      {managers.map((manager) => (
-        <div
-          key={manager.id}
-          className="flex justify-center items-center text-3xl font-bold underline"
-        >
-          <div>{manager.site}</div>
-          <div>{manager.username}</div>
-          <div>{manager.password}</div>
-        </div>
-      ))}
-      {managers.length === 0 && (
-        <div className="text-3xl font-bold underline">No Managers found</div>
-      )}
+    <div className="container">
+      <div className="managers-container">
+        {managers.map((manager) => (
+          <ManagerItem
+            key={manager.id}
+            id={manager.id as string}
+            site={manager.site as string}
+            user={manager.username as string}
+            favicon={favIconURL}
+            onClick={handlerOnClickManager}
+          />
+        ))}
+        {managers.length === 0 && (
+          <div className="text-xl font-bold underline">No Managers found</div>
+        )}
+      </div>
     </div>
   );
 };
@@ -33,7 +37,7 @@ export default Generate;
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  const { site = "" } = context.query;
+  const { site = "", favIconURL = "" } = context.query;
   let managers: Partial<Manager>[] = [];
   if (site) {
     managers = await prisma.manager.findMany({
@@ -53,6 +57,7 @@ export const getServerSideProps: GetServerSideProps = async (
   return {
     props: {
       managers,
+      favIconURL: decodeURIComponent(favIconURL as string),
     },
   };
 };

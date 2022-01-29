@@ -1,3 +1,27 @@
+const BASE_URL = "http://localhost:3000";
+let favIconURL;
+
+const getURL = () => {
+  const HOST = location.hostname;
+  const BASE_HOST = HOST.split(".").slice(-2).join(".");
+  const url = new URL(`${BASE_URL}/generate`);
+  const params = {
+    site: BASE_HOST,
+    favIconURL: encodeURIComponent(favIconURL),
+  };
+  Object.keys(params).forEach((key) =>
+    url.searchParams.append(key, params[key])
+  );
+  return url.href;
+};
+
+const requestFavIcon = () => {
+  const favicon = chrome.runtime.sendMessage({
+    REQUEST_TYPE: "REQUEST_FAVICON",
+  });
+  return favicon;
+};
+
 const validateField = (inputField) => {
   let searchFound = false;
   for (let attribute of inputField.attributes) {
@@ -16,6 +40,7 @@ const generateParent = () => {
   topDiv.style["position"] = "absolute";
   topDiv.style["z-index"] = "10000000000000";
   topDiv.style["opacity"] = "1";
+  topDiv.style["width"] = "400px";
   topDiv.style["visibility"] = "visible";
   topDiv.style["transform"] = "none";
   topDiv.style["clip-path"] = "none";
@@ -27,7 +52,9 @@ const generateParent = () => {
 
 const generateIFrame = () => {
   const iframe = document.createElement("iframe");
-  iframe.src = chrome.runtime.getURL("./dialog.html");
+  iframe.src = chrome.runtime.getURL(
+    `/dialog.html?url=${encodeURIComponent(getURL())}`
+  );
   iframe.style["border"] = "none";
   iframe.style["position"] = "relative";
   iframe.style["inset"] = "0px";
@@ -47,7 +74,7 @@ const generateIFrame = () => {
 const focusElement = (inputField) => {
   const topParent = document.getElementById("pass_manager_parent");
   const elementRect = inputField.getBoundingClientRect();
-  topParent.style["top"] = elementRect?.top + elementRect?.height + "px";
+  topParent.style["top"] = elementRect?.top + elementRect?.height + 20 + "px";
   topParent.style["left"] = elementRect?.left + "px";
   topParent.style["display"] = "block";
 };
@@ -91,4 +118,14 @@ const configureFields = () => {
   addListenerToInputFields(allInputFields);
 };
 
-configureFields();
+requestFavIcon();
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (sender.id !== chrome.runtime.id) return;
+  if (request.REQUEST_TYPE === "GET_FAVICON") {
+    sendResponse(true);
+    const { favIconUrl } = request?.data;
+    favIconURL = favIconUrl;
+    configureFields();
+  }
+});
