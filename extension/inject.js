@@ -1,9 +1,13 @@
 const validateField = (inputField) => {
-  const placeholder = inputField.getAttribute("placeholder");
-  if (!(placeholder && placeholder.toLowerCase().includes("search"))) {
-    return true;
+  let searchFound = false;
+  for (let i = 0; i < inputField.attributes.length; i++) {
+    const attrib = String(inputField.attributes[i]?.value);
+    if (attrib && attrib?.toLowerCase().includes("search")) {
+      searchFound = true;
+      break;
+    }
   }
-  return false;
+  return !searchFound;
 };
 
 const generateIFrame = () => {
