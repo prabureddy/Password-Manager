@@ -9,7 +9,15 @@ const prisma = new PrismaClient();
 const Generate = ({ managers = [], favIconURL = "" }: GeneratePageProps) => {
   console.log(managers);
   const handlerOnClickManager = (id: string) => {
-    console.log(id);
+    window.parent.postMessage(
+      {
+        TYPE: "MANAGER_CLICK",
+        data: {
+          manager: managers.find((manager) => manager.id === id),
+        },
+      },
+      "*"
+    );
   };
   return (
     <div className="container">

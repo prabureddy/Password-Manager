@@ -1,5 +1,6 @@
 const BASE_URL = "http://localhost:3000";
 let favIconURL;
+const allInputFields = [];
 
 const getURL = () => {
   const HOST = location.hostname;
@@ -53,7 +54,9 @@ const generateParent = () => {
 const generateIFrame = () => {
   const iframe = document.createElement("iframe");
   iframe.src = chrome.runtime.getURL(
-    `/dialog.html?url=${encodeURIComponent(getURL())}`
+    `/dialog.html?url=${encodeURIComponent(
+      getURL()
+    )}&origin=${encodeURIComponent(BASE_URL)}`
   );
   iframe.style["border"] = "none";
   iframe.style["position"] = "relative";
@@ -101,7 +104,6 @@ const addListenerToInputFields = (inputFields) => {
 
 const configureFields = () => {
   const forms = document.querySelectorAll("form");
-  const allInputFields = [];
   forms.forEach((form) => {
     const formFields = form.querySelectorAll(
       "input[type=text]:not([hidden]), input[type=password]:not([hidden]), input[type=email]:not([hidden])"
@@ -127,5 +129,19 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     const { favIconUrl } = request?.data;
     favIconURL = favIconUrl;
     configureFields();
+  }
+});
+
+window.addEventListener("message", (e) => {
+  if (!(e.origin === BASE_URL || e.data?.TYPE)) return;
+  if (e.data.TYPE === "MANAGER_CLICK") {
+    const { username, password } = e.data?.data?.manager;
+    allInputFields.forEach((inputField) => {
+      if (inputField.type === "text" || inputField.type === "email") {
+        inputField.value = username;
+      } else if (inputField.type === "password") {
+        inputField.value = password;
+      }
+    });
   }
 });
