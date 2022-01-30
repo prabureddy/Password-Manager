@@ -6,28 +6,29 @@ html {
   overflow: auto;
 }
 
-html::-webkit-scrollbar {
-  display: none;
-  width: 6px;
-  @apply bg-indigo-100;
-}
-
-html::-webkit-scrollbar-thumb {
-  background-color: #8abff1;
-  border-radius: 20px;
-}
-
 body {
   display: block !important;
   overflow: hidden !important;
 }
 
 .container {
-  @apply drop-shadow-xl;
+  height: 200px;
+  @apply drop-shadow-xl border-4 border-solid rounded-md border-indigo-400 overflow-auto backdrop-blur-md;
+}
+
+.container::-webkit-scrollbar {
+  display: none;
+  width: 6px;
+  @apply bg-indigo-100;
+}
+
+.container::-webkit-scrollbar-thumb {
+  background-color: #8abff1;
+  border-radius: 20px;
 }
 
 .managers-container {
-  @apply flex flex-col gap-2 backdrop-blur-sm bg-indigo-100 p-2 bg-transparent;
+  @apply flex flex-col gap-2 backdrop-blur-sm bg-indigo-100 p-3 bg-transparent;
 }
 
 .manager-item {

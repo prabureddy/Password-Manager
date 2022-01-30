@@ -78,7 +78,7 @@ const generateIFrame = () => {
 const focusElement = (inputField) => {
   const topParent = document.getElementById("pass_manager_parent");
   const elementRect = inputField.getBoundingClientRect();
-  topParent.style["top"] = elementRect?.top + elementRect?.height + 10 + "px";
+  topParent.style["top"] = elementRect?.top + elementRect?.height + 15 + "px";
   topParent.style["left"] = elementRect?.left + "px";
   topParent.style["display"] = "block";
 };
@@ -90,12 +90,22 @@ const blurElement = (inputFields, inputField, event) => {
   }
 };
 
+const addSubmitListener = (inputField) => {
+  inputField.addEventListener("click", (event) => {
+    console.log("clicked");
+  });
+};
+
 const addListenerToInputFields = (inputFields) => {
   const topDiv = generateParent();
   const iFrame = generateIFrame();
   topDiv.appendChild(iFrame);
   document.body.appendChild(topDiv);
   inputFields.forEach((inputField) => {
+    if (inputField.type === "submit") {
+      addSubmitListener(inputField);
+      return;
+    }
     inputField.setAttribute("autocomplete", "off");
     inputField.addEventListener("focus", () => focusElement(inputField));
     window.onclick = (event) => blurElement(inputFields, inputField, event);
@@ -106,7 +116,7 @@ const configureFields = () => {
   const forms = document.querySelectorAll("form");
   forms.forEach((form) => {
     const formFields = form.querySelectorAll(
-      "input[type=text]:not([hidden]), input[type=password]:not([hidden]), input[type=email]:not([hidden])"
+      "input[type=text]:not([hidden]), input[type=password]:not([hidden]), input[type=email]:not([hidden]), input[type=submit]:not([hidden])"
     );
     let fields = [];
     formFields.forEach((fieldDetails) => {
