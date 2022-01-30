@@ -1,5 +1,5 @@
-import React from "react";
 import { IManagerItemPageProps } from "../types";
+import { TiTick } from "react-icons/ti";
 
 const ManagerItem = ({
   id,
@@ -7,6 +7,7 @@ const ManagerItem = ({
   site,
   user,
   favicon,
+  selected,
 }: IManagerItemPageProps) => {
   const handlerClickManager = () => {
     onClick(id);
@@ -23,7 +24,7 @@ const ManagerItem = ({
         {user && <p className="content-user">{user}</p>}
       </div>
       <div className="fill">
-        <p>Fill</p>
+        {selected ? <TiTick style={{ width: 24, height: 24 }} /> : <p>Fill</p>}
       </div>
     </div>
   );

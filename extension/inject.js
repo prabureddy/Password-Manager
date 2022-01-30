@@ -17,17 +17,17 @@ const getURL = () => {
 };
 
 const requestFavIcon = () => {
-  const favicon = chrome.runtime.sendMessage({
+  return chrome.runtime.sendMessage({
     REQUEST_TYPE: "REQUEST_FAVICON",
   });
-  return favicon;
 };
 
 const validateField = (inputField) => {
+  const names = ["search", "message"];
   let searchFound = false;
   for (let attribute of inputField.attributes) {
     const attrib = String(attribute?.value);
-    if (attrib && attrib?.toLowerCase().includes("search")) {
+    if (attrib && names.some((name) => attrib?.toLowerCase().includes(name))) {
       searchFound = true;
       break;
     }
@@ -42,6 +42,7 @@ const generateParent = () => {
   topDiv.style["z-index"] = "10000000000000";
   topDiv.style["opacity"] = "1";
   topDiv.style["width"] = "400px";
+  topDiv.style["height"] = "200px";
   topDiv.style["visibility"] = "visible";
   topDiv.style["transform"] = "none";
   topDiv.style["clip-path"] = "none";
@@ -77,7 +78,7 @@ const generateIFrame = () => {
 const focusElement = (inputField) => {
   const topParent = document.getElementById("pass_manager_parent");
   const elementRect = inputField.getBoundingClientRect();
-  topParent.style["top"] = elementRect?.top + elementRect?.height + 20 + "px";
+  topParent.style["top"] = elementRect?.top + elementRect?.height + 30 + "px";
   topParent.style["left"] = elementRect?.left + "px";
   topParent.style["display"] = "block";
 };
@@ -90,7 +91,6 @@ const blurElement = (inputFields, inputField, event) => {
 };
 
 const addListenerToInputFields = (inputFields) => {
-  console.log(inputFields);
   const topDiv = generateParent();
   const iFrame = generateIFrame();
   topDiv.appendChild(iFrame);

@@ -1,5 +1,5 @@
+import { useState } from "react";
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
-import React from "react";
 import { Manager, PrismaClient } from "@prisma/client";
 import { GeneratePageProps } from "../../types";
 import ManagerItem from "../../components/Manager";
@@ -7,8 +7,9 @@ import ManagerItem from "../../components/Manager";
 const prisma = new PrismaClient();
 
 const Generate = ({ managers = [], favIconURL = "" }: GeneratePageProps) => {
-  console.log(managers);
+  const [selectedItem, setSelectedItem] = useState("");
   const handlerOnClickManager = (id: string) => {
+    setSelectedItem(id);
     window.parent.postMessage(
       {
         TYPE: "MANAGER_CLICK",
@@ -29,6 +30,7 @@ const Generate = ({ managers = [], favIconURL = "" }: GeneratePageProps) => {
             site={manager.site as string}
             user={manager.username as string}
             favicon={favIconURL}
+            selected={selectedItem === manager.id}
             onClick={handlerOnClickManager}
           />
         ))}

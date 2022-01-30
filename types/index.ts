@@ -10,5 +10,6 @@ export type IManagerItemPageProps = {
   site: string;
   user: string;
   favicon: string;
+  selected: boolean;
   onClick: (id: string) => void;
 };

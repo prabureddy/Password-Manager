@@ -2,19 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  overflow: auto;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+  width: 6px;
+  @apply bg-indigo-100;
+}
+
+html::-webkit-scrollbar-thumb {
+  background-color: #8abff1;
+  border-radius: 20px;
+}
+
 body {
   display: block !important;
-  width: 400px !important;
-  height: 320px !important;
   overflow: hidden !important;
 }
 
+.container {
+  @apply drop-shadow-xl;
+}
+
 .managers-container {
-  @apply flex flex-col gap-2 backdrop-blur-sm bg-indigo-100 p-2;
+  @apply flex flex-col gap-2 backdrop-blur-sm bg-indigo-100 p-2 bg-transparent;
 }
 
 .manager-item {
-  @apply flex flex-row space-x-0 gap-2 p-2 bg-gradient-to-r from-cyan-300 to-blue-300 rounded-md items-center cursor-pointer transition-all delay-75;
+  @apply flex flex-row space-x-0 gap-2 p-2 bg-gradient-to-r from-cyan-300 to-blue-300 rounded-md items-center cursor-pointer transition-all delay-75 duration-500;
 }
 
 .manager-item:hover {
