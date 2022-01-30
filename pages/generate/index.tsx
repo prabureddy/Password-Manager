@@ -35,9 +35,7 @@ const Generate = ({ managers = [], favIconURL = "" }: GeneratePageProps) => {
           />
         ))}
         {managers.length === 0 && (
-          <div className="bg-slate-200 text-xl font-bold underline">
-            No Managers found
-          </div>
+          <div className="no-managers">No saved passwords found</div>
         )}
       </div>
     </div>
