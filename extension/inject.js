@@ -23,7 +23,7 @@ const requestFavIcon = () => {
 };
 
 const validateField = (inputField) => {
-  const names = ["search", "message"];
+  const names = ["search", "message", "description", "list"];
   let searchFound = false;
   for (let attribute of inputField.attributes) {
     const attrib = String(attribute?.value);
