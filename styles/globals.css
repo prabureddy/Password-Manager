@@ -35,7 +35,7 @@ body {
 }
 
 .manager-item:hover {
-  @apply from-cyan-400 to-blue-500 drop-shadow-xl skew-x-1 -skew-y-1;
+  @apply ring ring-pink-500 ring-offset-2 ring-offset-blue-100 from-cyan-400 to-blue-500 drop-shadow-xl skew-x-1 -skew-y-1;
 }
 
 .manager-item .favicon {
