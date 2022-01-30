@@ -78,7 +78,7 @@ const generateIFrame = () => {
 const focusElement = (inputField) => {
   const topParent = document.getElementById("pass_manager_parent");
   const elementRect = inputField.getBoundingClientRect();
-  topParent.style["top"] = elementRect?.top + elementRect?.height + 30 + "px";
+  topParent.style["top"] = elementRect?.top + elementRect?.height + 10 + "px";
   topParent.style["left"] = elementRect?.left + "px";
   topParent.style["display"] = "block";
 };
