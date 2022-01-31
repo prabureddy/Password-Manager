@@ -1,13 +1,12 @@
-const BASE_URL = "http://localhost:3000";
+const BASE_APPLICATION_URL = "http://localhost:3000";
 let favIconURL;
+let BASE_WEBSITE_HOST;
 const allInputFields = [];
 
 const getURL = () => {
-  const HOST = location.hostname;
-  const BASE_HOST = HOST.split(".").slice(-2).join(".");
-  const url = new URL(`${BASE_URL}/generate`);
+  const url = new URL(`${BASE_APPLICATION_URL}/generate`);
   const params = {
-    site: BASE_HOST,
+    site: BASE_WEBSITE_HOST,
     favIconURL: encodeURIComponent(favIconURL),
   };
   Object.keys(params).forEach((key) =>
@@ -35,6 +34,11 @@ const validateField = (inputField) => {
   return !searchFound;
 };
 
+const hideIframe = () => {
+  const topParent = document.getElementById("pass_manager_parent");
+  topParent.style["display"] = "none";
+};
+
 const generateParent = () => {
   const topDiv = document.createElement("div");
   topDiv.id = "pass_manager_parent";
@@ -57,7 +61,7 @@ const generateIFrame = () => {
   iframe.src = chrome.runtime.getURL(
     `/dialog.html?url=${encodeURIComponent(
       getURL()
-    )}&origin=${encodeURIComponent(BASE_URL)}`
+    )}&origin=${encodeURIComponent(BASE_APPLICATION_URL)}`
   );
   iframe.style["border"] = "none";
   iframe.style["position"] = "relative";
@@ -84,15 +88,28 @@ const focusElement = (inputField) => {
 };
 
 const blurElement = (inputFields, inputField, event) => {
-  if (event.target !== inputField && !inputFields.includes(event.target)) {
-    const topParent = document.getElementById("pass_manager_parent");
-    topParent.style["display"] = "none";
-  }
+  if (event.target !== inputField && !inputFields.includes(event.target))
+    hideIframe();
 };
 
 const addSubmitListener = (inputField) => {
   inputField.addEventListener("click", (event) => {
-    console.log("clicked");
+    let username;
+    let password;
+    allInputFields.forEach((inputF) => {
+      if (!inputF.value) return;
+      if (inputF.type === "text" || inputF.type === "email") {
+        username = inputF.value;
+      } else if (inputF.type === "password") {
+        password = inputF.value;
+      }
+    });
+    chrome.storage.local.set({
+      SAVE_PASSWORD: JSON.stringify({
+        username,
+        password,
+      }),
+    });
   });
 };
 
@@ -130,20 +147,8 @@ const configureFields = () => {
   addListenerToInputFields(allInputFields);
 };
 
-requestFavIcon();
-
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  if (sender.id !== chrome.runtime.id) return;
-  if (request.REQUEST_TYPE === "GET_FAVICON") {
-    sendResponse(true);
-    const { favIconUrl } = request?.data;
-    favIconURL = favIconUrl;
-    configureFields();
-  }
-});
-
 window.addEventListener("message", (e) => {
-  if (!(e.origin === BASE_URL || e.data?.TYPE)) return;
+  if (!(e.origin === BASE_APPLICATION_URL || e.data?.TYPE)) return;
   if (e.data.TYPE === "MANAGER_CLICK") {
     const { username, password } = e.data?.data?.manager;
     allInputFields.forEach((inputField) => {
@@ -153,5 +158,40 @@ window.addEventListener("message", (e) => {
         inputField.value = password;
       }
     });
+    hideIframe();
   }
 });
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (sender.id !== chrome.runtime.id) return;
+  if (request.REQUEST_TYPE === "GET_FAVICON") {
+    sendResponse(true);
+    const { favIconUrl } = request?.DATA;
+    favIconURL = favIconUrl;
+    chrome.storage.local.get(["SAVE_PASSWORD"], async (result) => {
+      console.log("Value currently is " + result.SAVE_PASSWORD);
+      const { SAVE_PASSWORD: savedPassword } = result;
+      if (savedPassword) {
+        const { username, password } = JSON.parse(savedPassword);
+        const url = new URL(`${BASE_APPLICATION_URL}/api/manager`);
+        const params = {
+          site: BASE_WEBSITE_HOST,
+        };
+        Object.keys(params).forEach((key) =>
+          url.searchParams.append(key, params[key])
+        );
+        const response = await (await fetch(url.href)).json();
+        console.log("response");
+        console.log(response);
+        // configureFields();F
+      }
+    });
+  }
+});
+
+const initApplication = () => {
+  requestFavIcon();
+  const HOST = location.hostname;
+  BASE_WEBSITE_HOST = HOST.split(".").slice(-2).join(".");
+};
+initApplication();

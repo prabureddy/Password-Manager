@@ -4,16 +4,22 @@
 
 html {
   overflow: auto;
+  height: 100%;
 }
 
 body {
   display: block !important;
   overflow: hidden !important;
+  height: 100%;
 }
 
 .container {
-  height: 200px;
-  @apply drop-shadow-xl border-4 border-solid rounded-md border-indigo-400 overflow-auto backdrop-blur-md;
+  height: 100%;
+  @apply drop-shadow-xl border-4 border-solid rounded-md border-pink-400 overflow-auto backdrop-blur-md;
+}
+
+#__next {
+  height: 100%;
 }
 
 .container::-webkit-scrollbar {
@@ -28,15 +34,15 @@ body {
 }
 
 .managers-container {
-  @apply flex flex-col gap-2 backdrop-blur-sm bg-indigo-100 p-3 bg-transparent h-full;
+  @apply flex flex-col gap-2 backdrop-blur-sm bg-indigo-100 p-2 bg-transparent;
 }
 
 .manager-item {
-  @apply flex flex-row space-x-0 gap-2 p-2 bg-gradient-to-r from-cyan-300 to-blue-300 rounded-md items-center cursor-pointer transition-all delay-75 duration-500;
+  @apply flex flex-row space-x-0 gap-2 p-2 bg-gradient-to-r from-pink-300 to-blue-300 rounded-md items-center cursor-pointer transition-all delay-75 duration-500;
 }
 
 .manager-item:hover {
-  @apply ring ring-pink-500 ring-offset-2 ring-offset-blue-100 from-cyan-400 to-blue-500 drop-shadow-xl skew-x-1 -skew-y-1;
+  @apply ring ring-pink-500 ring-offset-2 ring-offset-blue-100 from-pink-400 to-blue-400 drop-shadow-xl transform-cpu skew-x-1 -skew-y-1;
 }
 
 .manager-item .favicon {

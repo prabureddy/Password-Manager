@@ -7,7 +7,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     sendResponse(true);
     chrome.tabs.sendMessage(tabId, {
       REQUEST_TYPE: "GET_FAVICON",
-      data: {
+      DATA: {
         favIconUrl,
       },
     });
